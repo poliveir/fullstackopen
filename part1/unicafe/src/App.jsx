@@ -9,6 +9,16 @@ const Statistics = ({statistics}) => {
 	const average = (statistics.good - statistics.bad) / total;
 	const positive = (statistics.good / total) * 100;
 
+	if (sum === 0) {
+		return (
+			<>
+				<h1>statistics</h1>
+
+				<p>No feedback given</p>
+			</>
+		);
+	}
+
 	return (
 		<>
 			<h1>statistics</h1>
@@ -28,6 +38,7 @@ const Statistics = ({statistics}) => {
 			</p>
 		</>
 	);
+
 };
 
 const App = () => {
