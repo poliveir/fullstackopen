@@ -2,24 +2,30 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    {
-		name: 'Arto Hellas',
-		phoneNumber: '040-1234567'
-	}
-  ])
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ]);
+  const [filteredPersons, setFilteredPersons] = useState(persons);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+  const [nameFilter, setNameFilter] = useState('');
 
   const onSubmit = (event) => {
 	event.preventDefault();
 	if (persons.find(person => person.name === newName))
 		alert(`${newName} is already added to phonebook`);
 	else {
-		setPersons(persons.concat(
+		const newPersons = persons.concat(
 			{
 				name: newName,
-				phoneNumber: newNumber
+				number: newNumber
 			}
+		)
+		setPersons(newPersons);
+		setFilteredPersons(newPersons.filter(person =>
+			person.name.toLowerCase().includes(nameFilter.toLowerCase())
 		));
 		setNewName('');
 		setNewNumber('');
@@ -34,9 +40,20 @@ const App = () => {
 	setNewNumber(event.target.value);
   }
 
+const onChangeNameFilter = (event) => {
+	setFilteredPersons(persons.filter(person =>
+		person.name.toLowerCase().includes(event.target.value.toLowerCase())
+	));
+	setNameFilter(event.target.value);
+};
+
+
   return (
     <div>
       <h2>Phonebook</h2>
+	  <input value={nameFilter} onChange={onChangeNameFilter}/>
+
+	  <h2>add a new</h2>
       <form onSubmit={onSubmit}>
 		<div>
           name: <input value={newName} onChange={onChangeName}/>
@@ -47,9 +64,9 @@ const App = () => {
 		<button type="submit">add</button>
       </form>
       <h2>Numbers</h2>
-      {persons.map(person =>
-	  	<p key={person.name}>{person.name} {person.phoneNumber}</p>
-	  )}
+		{filteredPersons.map(person =>
+			<p key={person.name}>{person.name} {person.number}</p>
+		)}
 	  <div>debug: {newName}</div>
     </div>
   )
