@@ -39,7 +39,7 @@ const App = () => {
 				)
 				.then(createdContact => {
 					const newContactList = contacts.concat(createdContact);
-					setContacts(contacts.concat(newContactList))
+					setContacts(newContactList)
 					setFilteredContacts(newContactList.filter(contact =>
 						contact.name.toLowerCase().includes(nameFilter.toLowerCase())
 					));
@@ -64,6 +64,19 @@ const App = () => {
 		setNameFilter(event.target.value);
 	};
 
+	const onDeleteContact = (id) => {
+		if (window.confirm(`Delete ${contacts.find(contact => contact.id === id).name}?`))
+			contactService
+				.remove(id)
+				.then(() => {
+					const newContactList = contacts.filter(contact => contact.id !== id);
+					setContacts(newContactList);
+					setFilteredContacts(newContactList.filter(contact =>
+						contact.name.toLowerCase().includes(nameFilter.toLowerCase())
+					));
+				})
+	};
+
 
 	return (
 		<div>
@@ -79,7 +92,10 @@ const App = () => {
 				onChangeNumber={onChangeNumber}
 			></ContactForm>
 
-			<ContactList contacts={filteredContacts}></ContactList>
+			<ContactList
+				contacts={filteredContacts}
+				onDeleteContact={onDeleteContact}
+			></ContactList>
 		</div>
 	);
 }
