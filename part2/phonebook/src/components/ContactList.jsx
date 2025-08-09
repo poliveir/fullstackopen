@@ -8,6 +8,7 @@ const ContactList = ({contacts}) => {
 			{contacts.map(contact =>
 				<Contact
 					key={contact.id}
+					id={contact.id}
 					name={contact.name}
 					number={contact.number}
 				></Contact>

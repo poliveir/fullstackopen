@@ -17,7 +17,14 @@ const create = (contact) => {
 		.then(response => response.data);
 };
 
+const remove = (id) => {
+	return axios
+		.delete(`${baseUrl}/contacts/${id}`)
+		.then(response => response.data);
+};
+
 export default {
 	getAll,
-	create
+	create,
+	remove
 }
