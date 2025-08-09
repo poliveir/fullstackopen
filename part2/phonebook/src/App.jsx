@@ -27,8 +27,29 @@ const App = () => {
 	const onSubmit = (event) => {
 		event.preventDefault();
 
-		if (contacts.find(contact => contact.name === newName))
-			alert(`${newName} is already added to phonebook`);
+		const existingContact = contacts.find(contact => contact.name === newName);
+		if (
+			existingContact &&
+			window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+		) {
+			contactService
+				.update(
+					{
+						...existingContact,
+						number: newNumber
+					}
+				)
+				.then(updatedContact => {
+					console.log(updatedContact);
+					const newContactList = contacts.map(contact => contact.id === updatedContact.id ? updatedContact : contact);
+					setContacts(newContactList);
+					setFilteredContacts(newContactList.filter(contact =>
+						contact.name.toLowerCase().includes(nameFilter.toLowerCase())
+					));
+					setNewName('');
+					setNewNumber('');
+				});
+		}
 		else {
 			contactService
 				.create(
