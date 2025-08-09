@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Filter from './components/Filter';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
+import contactService from './services/contactService';
 
 const App = () => {
 	const [contacts, setContacts] = useState([]);
@@ -14,13 +14,15 @@ const App = () => {
 	const [nameFilter, setNameFilter] = useState('');
 
 	useEffect(() => {
-		axios
-			.get('http://localhost:3001/persons')
-			.then(response => {
-				setContacts(response.data)
-				setFilteredContacts(response.data)
+		contactService
+			.getAll()
+			.then(contactList => {
+				setContacts(contactList)
+				setFilteredContacts(contactList)
 			});
-	}, []);
+		},
+		[]
+	);
 
 	const onSubmit = (event) => {
 		event.preventDefault();
@@ -28,16 +30,15 @@ const App = () => {
 		if (contacts.find(contact => contact.name === newName))
 			alert(`${newName} is already added to phonebook`);
 		else {
-			axios
-				.post(
-					'http://localhost:3001/persons',
+			contactService
+				.create(
 					{
 						name: newName,
 						number: newNumber
 					}
 				)
-				.then(response => {
-					const newContactList = contacts.concat(response.data);
+				.then(createdContact => {
+					const newContactList = contacts.concat(createdContact);
 					setContacts(contacts.concat(newContactList))
 					setFilteredContacts(newContactList.filter(contact =>
 						contact.name.toLowerCase().includes(nameFilter.toLowerCase())
