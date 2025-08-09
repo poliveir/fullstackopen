@@ -28,19 +28,23 @@ const App = () => {
 		if (contacts.find(contact => contact.name === newName))
 			alert(`${newName} is already added to phonebook`);
 		else {
-			const newContacts = contacts.concat(
-				{
-					name: newName,
-					number: newNumber,
-					id: contacts.length + 1
-				}
-			);
-			setContacts(newContacts);
-			setFilteredContacts(newContacts.filter(contact =>
-				contact.name.toLowerCase().includes(nameFilter.toLowerCase())
-			));
-			setNewName('');
-			setNewNumber('');
+			axios
+				.post(
+					'http://localhost:3001/persons',
+					{
+						name: newName,
+						number: newNumber
+					}
+				)
+				.then(response => {
+					const newContactList = contacts.concat(response.data);
+					setContacts(contacts.concat(newContactList))
+					setFilteredContacts(newContactList.filter(contact =>
+						contact.name.toLowerCase().includes(nameFilter.toLowerCase())
+					));
+					setNewName('');
+					setNewNumber('');
+				});
 		}
 	};
 
