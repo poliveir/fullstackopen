@@ -14,7 +14,8 @@ const App = () => {
 
 	const [nameFilter, setNameFilter] = useState('');
 
-	const [successMessage, setSuccessMessage] = useState('');
+	const [notificationMessage, setNotificationMessage] = useState('');
+	const [notificationClassName, setNotificationClassName] = useState('');
 
 	useEffect(() => {
 		contactService
@@ -26,6 +27,46 @@ const App = () => {
 		},
 		[]
 	);
+
+	const handleUpsertContact = (contact, action) => {
+		let newContactList;
+		if (action === 'add') {
+			newContactList = contacts.concat(contact);
+		}
+		else {
+			newContactList = contacts.map(c => c.id === contact.id ? contact : c);
+		}
+		setContacts(newContactList);
+		setFilteredContacts(newContactList.filter(c =>
+			c.name.toLowerCase().includes(nameFilter.toLowerCase())
+		));
+		setNewName('');
+		setNewNumber('');
+		const notificationAction = action === 'add' ? 'Added' : 'Updated';
+		setNotificationMessage(`${notificationAction} ${contact.name}`);
+		setNotificationClassName('success');
+		setTimeout(
+			() => {
+				setNotificationMessage('')
+				setNotificationClassName('')
+			},
+			5000
+		);
+	}
+
+	const handleError = (error, contactName) => {
+		setNotificationMessage(`Information of ${contactName} has already been removed from server`);
+		setNotificationClassName('error');
+		setTimeout(
+			() => {
+				setNotificationMessage('')
+				setNotificationClassName('')
+			},
+			5000
+		);
+		setContacts(contacts.filter(c => c.name !== contactName));
+		setFilteredContacts(filteredContacts.filter(c => c.name !== contactName));
+	};
 
 	const onSubmit = (event) => {
 		event.preventDefault();
@@ -42,15 +83,8 @@ const App = () => {
 						number: newNumber
 					}
 				)
-				.then(updatedContact => {
-					const newContactList = contacts.map(contact => contact.id === updatedContact.id ? updatedContact : contact);
-					setContacts(newContactList);
-					setFilteredContacts(newContactList.filter(contact =>
-						contact.name.toLowerCase().includes(nameFilter.toLowerCase())
-					));
-					setNewName('');
-					setNewNumber('');
-				});
+				.then((contact) => handleUpsertContact(contact, 'update'))
+				.catch((error) => handleError(error, existingContact.name));
 		}
 		else {
 			contactService
@@ -60,17 +94,8 @@ const App = () => {
 						number: newNumber
 					}
 				)
-				.then(createdContact => {
-					const newContactList = contacts.concat(createdContact);
-					setContacts(newContactList)
-					setFilteredContacts(newContactList.filter(contact =>
-						contact.name.toLowerCase().includes(nameFilter.toLowerCase())
-					));
-					setNewName('');
-					setNewNumber('');
-					setSuccessMessage(`Added ${createdContact.name}`);
-					setTimeout(() => setSuccessMessage(''), 5000);
-				});
+				.then((contact) => handleUpsertContact(contact, 'add'))
+				.catch(() => handleError(error, newName));
 		}
 	};
 
@@ -107,7 +132,10 @@ const App = () => {
 		<div>
 			<h2>Phonebook</h2>
 
-			<Notification message={successMessage} className='success'></Notification>
+			<Notification
+				message={notificationMessage}
+				classNames={`notification ${notificationClassName}`}
+			></Notification>
 
 			<Filter input={nameFilter} onChange={onChangeNameFilter}></Filter>
 
