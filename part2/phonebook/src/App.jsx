@@ -3,6 +3,7 @@ import Filter from './components/Filter';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
 import contactService from './services/contactService';
+import Notification from './components/Notification';
 
 const App = () => {
 	const [contacts, setContacts] = useState([]);
@@ -12,6 +13,8 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('');
 
 	const [nameFilter, setNameFilter] = useState('');
+
+	const [successMessage, setSuccessMessage] = useState('');
 
 	useEffect(() => {
 		contactService
@@ -40,7 +43,6 @@ const App = () => {
 					}
 				)
 				.then(updatedContact => {
-					console.log(updatedContact);
 					const newContactList = contacts.map(contact => contact.id === updatedContact.id ? updatedContact : contact);
 					setContacts(newContactList);
 					setFilteredContacts(newContactList.filter(contact =>
@@ -66,6 +68,8 @@ const App = () => {
 					));
 					setNewName('');
 					setNewNumber('');
+					setSuccessMessage(`Added ${createdContact.name}`);
+					setTimeout(() => setSuccessMessage(''), 5000);
 				});
 		}
 	};
@@ -102,6 +106,8 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
+
+			<Notification message={successMessage} className='success'></Notification>
 
 			<Filter input={nameFilter} onChange={onChangeNameFilter}></Filter>
 
