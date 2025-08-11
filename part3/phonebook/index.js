@@ -40,6 +40,12 @@ app.get('/api/contacts/:id', (req, res) => {
 		res.status(404).end()
 });
 
+app.delete('/api/contacts/:id', (req, res) => {
+	const id = req.params.id;
+	contacts = contacts.filter(contact => contact.id !== id);
+	res.status(204).end();
+});
+
 app.get("/info", (req, res) => {
 	res.send(
 		`<p>Phonebook has info for ${contacts.length} people</p>\
