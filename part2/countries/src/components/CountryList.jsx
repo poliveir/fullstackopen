@@ -1,7 +1,7 @@
+import Button from "../../../phonebook/src/components/Button";
 import CountryInfo from "./CountryInfo";
 
-const CountryList = ({countryList}) => {
-
+const CountryList = ({countryList, onShowCountry}) => {
 	if (countryList.length > 10) {
 		return <p>Too many matches, specify another filter</p>
 	}
@@ -12,7 +12,9 @@ const CountryList = ({countryList}) => {
 		return (
 			<>
 				{countryList.map(c =>
-					<p key={c.name.official}>{c.name.common}</p>
+					<p key={c.name.official}>
+						{c.name.common} <Button text="Show" onClick={() => onShowCountry(c.name.common)}></Button>
+					</p>
 				)}
 			</>
 		)

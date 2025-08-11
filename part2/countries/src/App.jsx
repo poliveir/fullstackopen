@@ -35,7 +35,10 @@ const App = () => {
 	const onChangeCountry = (event) => {
 		event.preventDefault();
 
-		const countryName = event.target.value;
+		setfindCountryFieldValue(event.target.value);
+	};
+
+	const handleShowCountry = (countryName) => {
 		setfindCountryFieldValue(countryName);
 	};
 
@@ -46,7 +49,10 @@ const App = () => {
 				onChange={onChangeCountry}
 			></FindCountryField>
 
-			<CountryList countryList={filteredCountryList}></CountryList>
+			<CountryList
+				countryList={filteredCountryList}
+				onShowCountry={handleShowCountry}
+			></CountryList>
 		</div>
 	);
 }
