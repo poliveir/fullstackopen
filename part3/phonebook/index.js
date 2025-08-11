@@ -48,6 +48,20 @@ app.delete('/api/contacts/:id', (req, res) => {
 
 app.post('/api/contacts', (req, res) => {
 	const contact = req.body;
+
+	if (!contact.name)
+		return res.status(400).json({
+			error: "name is missing"
+		});
+	else if (!contact.number)
+		return res.status(400).json({
+			error:  "number is missing"
+		});
+
+	if (contacts.find(c => c.name === contact.name))
+		return res.status(400).json({
+			error:  "name must be unique"
+		});
 	contacts = contacts.concat(
 		{
 			...contact,
