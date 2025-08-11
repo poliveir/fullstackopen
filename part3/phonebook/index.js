@@ -1,7 +1,7 @@
 const express = require('express');
 var morgan = require('morgan')
 const app = express();
-
+const cors = require('cors')
 
 let contacts = [
     {
@@ -25,6 +25,12 @@ let contacts = [
       "number": "39-23-6423122"
     }
 ];
+
+var corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions))
 
 app.use(express.json());
 
@@ -73,13 +79,12 @@ app.post('/api/contacts', (req, res) => {
 		return res.status(400).json({
 			error:  "name must be unique"
 		});
-	contacts = contacts.concat(
-		{
-			...contact,
-			id: Math.random().toString(12).substring(2, 11)
-		}
-	);
-	res.json(contact);
+	const newContact = {
+		...contact,
+		id: Math.random().toString(12).substring(2, 11)
+	};
+	contacts = contacts.concat(newContact);
+	res.json(newContact);
 });
 
 app.get("/info", (req, res) => {

@@ -1,12 +1,12 @@
 import Button from "./Button";
 
-const Contact = ({id, name, number, onDeleteContact}) =>
+const Contact = ({contact, onDeleteContact}) =>
 	<p>
-		{name} {number}
+		{contact.name} {contact.number}
 		<span> </span>
 		<Button
 			text='delete'
-			onClick={() => onDeleteContact(id)}
+			onClick={() => onDeleteContact(contact.id)}
 		></Button>
 	</p>
 
