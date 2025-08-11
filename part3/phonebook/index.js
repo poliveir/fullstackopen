@@ -30,6 +30,16 @@ app.get("/api/contacts", (req, res) => {
 	res.json(contacts);
 });
 
+app.get('/api/contacts/:id', (req, res) => {
+	const id = req.params.id;
+	const contact = contacts.find(contact => contact.id === id);
+
+	if (contact)
+		res.json(contact);
+	else
+		res.status(404).end()
+});
+
 app.get("/info", (req, res) => {
 	res.send(
 		`<p>Phonebook has info for ${contacts.length} people</p>\
