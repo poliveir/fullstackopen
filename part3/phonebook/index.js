@@ -46,6 +46,17 @@ app.delete('/api/contacts/:id', (req, res) => {
 	res.status(204).end();
 });
 
+app.post('/api/contacts', (req, res) => {
+	const contact = req.body;
+	contacts = contacts.concat(
+		{
+			...contact,
+			id: Math.random().toString(12).substring(2, 11)
+		}
+	);
+	res.json(contact);
+});
+
 app.get("/info", (req, res) => {
 	res.send(
 		`<p>Phonebook has info for ${contacts.length} people</p>\
