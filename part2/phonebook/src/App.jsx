@@ -54,7 +54,7 @@ const App = () => {
 		);
 	}
 
-	const handleError = (error, contactName) => {
+	const handleError = (error) => {
 		setNotificationMessage(error.response.data.error);
 		setNotificationClassName('error');
 		setTimeout(
@@ -64,8 +64,6 @@ const App = () => {
 			},
 			5000
 		);
-		setContacts(contacts.filter(c => c.name !== contactName));
-		setFilteredContacts(filteredContacts.filter(c => c.name !== contactName));
 	};
 
 	const onSubmit = (event) => {
