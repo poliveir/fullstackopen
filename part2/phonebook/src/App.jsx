@@ -55,7 +55,7 @@ const App = () => {
 	}
 
 	const handleError = (error, contactName) => {
-		setNotificationMessage(`Information of ${contactName} has already been removed from server`);
+		setNotificationMessage(error.response.data.error);
 		setNotificationClassName('error');
 		setTimeout(
 			() => {
@@ -95,7 +95,7 @@ const App = () => {
 					}
 				)
 				.then((contact) => handleUpsertContact(contact, 'add'))
-				.catch(() => handleError(error, newName));
+				.catch((error) => handleError(error, newName));
 		}
 	};
 
